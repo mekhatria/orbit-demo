@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Norway AM-146 Moped Buying Decision</title>
+<title>🛵 Norway AM-146 Moped Buying Decision</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%9B%B5</text></svg>">
 <script>
 // Set the theme before first paint to avoid a light/dark flash.
 (function () {
@@ -55,6 +56,7 @@
   }
   body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; max-width: 1300px; margin: 0 auto; padding: 32px 24px; background: var(--bg); color: var(--text); transition: background .15s, color .15s; }
   a { color: var(--link); }
+  code { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 4px; padding: 1px 5px; font-size: 0.9em; }
   h1 { font-size: 24px; margin-bottom: 4px; font-weight: 600; }
   p.sub { color: var(--muted); margin-top: 0; margin-bottom: 28px; font-size: 14px; max-width: 900px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -63,6 +65,15 @@
   .chart { width: 100%; height: 340px; }
   .full { grid-column: 1 / -1; }
   .missing { font-size: 11px; color: var(--missing); margin-top: 6px; }
+  .brand-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px 5px 8px; border-radius: 999px;
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    font-size: 12.5px; color: var(--text); text-decoration: none;
+  }
+  .brand-chip:hover { border-color: var(--muted); }
+  .brand-chip img { width: 16px; height: 16px; border-radius: 3px; }
   .theme-toggle {
     position: fixed; top: 16px; right: 16px; z-index: 100;
     width: 40px; height: 40px; border-radius: 50%;
@@ -109,8 +120,21 @@ function toggleTheme() {
   document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
 }
 </script>
-<h1>Which Norway AM-146 moped should I actually buy?</h1>
-<p class="sub">15 models researched (8 electric, 7 thermic/gasoline), all capped at the 45 km/h AM-146 class. Every chart is built from a static, cleaned <a href="moped-dataset.json" target="_blank" rel="noopener noreferrer">moped-dataset.json</a> - gaps and low-trust figures are shown honestly rather than filled in. Built with Highcharts, chart types chosen via the Chartchooser MCP, decision-support tools from Highcharts Orbit. Read the <a href="blog.html" target="_blank" rel="noopener noreferrer">write-up</a> on how this dashboard led to an actual decision.</p>
+<h1>🛵 Which Norway AM-146 moped should I actually buy?</h1>
+<p class="sub">15 models researched (8 electric, 7 thermic/gasoline), all capped at the 45 km/h AM-146 class. Every chart is built from a static, cleaned <a href="moped-dataset.json" target="_blank" rel="noopener noreferrer">moped-dataset.json</a> - gaps and low-trust figures are shown honestly rather than filled in. Built with Highcharts, chart types chosen via the <a href="https://www.highcharts.com/chartchooser/" target="_blank" rel="noopener noreferrer">Chartchooser MCP</a> (server: <a href="https://chartchooser-mcp.highcharts.ai/" target="_blank" rel="noopener noreferrer"><code>chartchooser-mcp.highcharts.ai</code></a>), decision-support tools from <a href="https://orbit.highsoftlabs.com/" target="_blank" rel="noopener noreferrer">Highcharts Orbit</a>. Read the <a href="blog.html" target="_blank" rel="noopener noreferrer">write-up</a> on how this dashboard led to an actual decision.</p>
+
+<div class="brand-strip" aria-label="Brands compared">
+  <a class="brand-chip" href="https://vmoto.no" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=vmoto.no&sz=64" alt=""> Vmoto</a>
+  <a class="brand-chip" href="https://www.niu.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=niu.com&sz=64" alt=""> NIU</a>
+  <a class="brand-chip" href="https://www.vespa.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=vespa.com&sz=64" alt=""> Vespa</a>
+  <a class="brand-chip" href="https://www.piaggio.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=piaggio.com&sz=64" alt=""> Piaggio</a>
+  <a class="brand-chip" href="https://www.peugeot-motocycles.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=peugeot-motocycles.com&sz=64" alt=""> Peugeot</a>
+  <a class="brand-chip" href="https://www.yamaha-motor.eu" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=yamaha-motor.eu&sz=64" alt=""> Yamaha</a>
+  <a class="brand-chip" href="https://www.kymco.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=kymco.com&sz=64" alt=""> Kymco</a>
+  <a class="brand-chip" href="https://www.segway.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=segway.com&sz=64" alt=""> Segway</a>
+  <a class="brand-chip" href="https://www.sym-global.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=sym-global.com&sz=64" alt=""> SYM</a>
+  <a class="brand-chip" href="https://www.vassla.com" target="_blank" rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain=vassla.com&sz=64" alt=""> V&auml;ssla</a>
+</div>
 
 <div class="grid" id="chartsGrid">
   <div class="card full">
@@ -254,6 +278,15 @@ function bucketRepair(rd) {
 }
 
 function shortName(d) { return d.brand + ' ' + d.model; }
+
+var BRAND_DOMAIN = {
+  'Vmoto': 'vmoto.no', 'NIU': 'niu.com', 'Vespa': 'vespa.com', 'Piaggio': 'piaggio.com',
+  'Peugeot': 'peugeot-motocycles.com', 'Yamaha': 'yamaha-motor.eu', 'Kymco': 'kymco.com',
+  'Segway': 'segway.com', 'SYM': 'sym-global.com', 'Vassla': 'vassla.com'
+};
+function brandFavicon(brand, size) {
+  return 'https://www.google.com/s2/favicons?domain=' + (BRAND_DOMAIN[brand] || '') + '&sz=' + (size || 32);
+}
 
 // Inlined from moped-dataset.json (kept in the repo as the readable source file).
 // Not fetched at runtime: fetch() rejects file:// URLs outright in every browser,
