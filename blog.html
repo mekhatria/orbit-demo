@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buying a Moped With Data</title>
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem('theme');
+    var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {}
+})();
+</script>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #fafaf9; --text: #1f1f1f; --muted: #6b6b6b;
+    --card-bg: #fff; --card-border: #e2e0d9; --link: #1f77b4; --accent: #d95f02;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: #16161c; --text: #eaeaea; --muted: #9b9ba3;
+    --card-bg: #1f1f27; --card-border: #34343f; --link: #7db8ec; --accent: #e8935a;
+    color-scheme: dark;
+  }
+  body {
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    max-width: 760px; margin: 0 auto; padding: 32px 24px 80px;
+    background: var(--bg); color: var(--text); line-height: 1.65; font-size: 16px;
+    transition: background .15s, color .15s;
+  }
+  a { color: var(--link); }
+  h1 { font-size: 30px; line-height: 1.25; margin-bottom: 6px; }
+  h2 { font-size: 21px; margin-top: 40px; }
+  .kicker { color: var(--muted); font-size: 14px; margin-top: 0; margin-bottom: 32px; }
+  .lede { font-size: 18px; color: var(--muted); }
+  blockquote {
+    margin: 24px 0; padding: 4px 20px; border-left: 3px solid var(--accent);
+    color: var(--muted); font-style: italic;
+  }
+  .callout {
+    background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 16px 20px; margin: 24px 0; font-size: 15px;
+  }
+  code { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 4px; padding: 1px 5px; font-size: 0.9em; }
+  .cta {
+    display: inline-block; margin-top: 8px; padding: 10px 18px; border-radius: 8px;
+    background: var(--link); color: #fff; text-decoration: none; font-weight: 600;
+  }
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text);
+    font-size: 18px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  hr { border: none; border-top: 1px solid var(--card-border); margin: 40px 0; }
+  .table-wrap { overflow-x: auto; margin: 24px 0; border: 1px solid var(--card-border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; white-space: nowrap; }
+  th, td { padding: 9px 12px; border-bottom: 1px solid var(--card-border); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; background: var(--card-bg); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.winner { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .prop-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .prop-electric { background: #1f77b4; }
+  .prop-thermic { background: #d95f02; }
+  .table-caption { font-size: 12px; color: var(--muted); margin-top: -14px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+<script>
+document.getElementById('themeToggle').textContent =
+  document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+function toggleTheme() {
+  var html = document.documentElement;
+  var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+}
+</script>
+
+<p class="kicker">Personal project · Highcharts + Chartchooser MCP + Orbit</p>
+<h1>Which 45 km/h moped should I actually buy?</h1>
+<p class="lede">In this post I'll walk you through how I used data, Highcharts, the Chartchooser MCP and Orbit to answer that question for myself, and why the same three tools would help with almost any decision where you're staring at a spreadsheet trying to compare things that don't reduce to one number.</p>
+
+<p>Norway's AM-146 license class caps you at 45 km/h. Inside that limit there are electric and gasoline mopeds spanning 12,000 to 73,000 NOK, and no obvious winner. I didn't want to buy on vibes, so I decided to treat it like an actual data problem: collect real prices and specs, chart them properly, and let the data argue with itself until something useful fell out.</p>
+
+<h2>The data was messier than I expected</h2>
+<p>Fifteen models, sourced from dealer listings, manufacturer pages and a few price comparisons. Almost nothing lined up cleanly. Prices came as "campaign vs before campaign," ranges came as "up to X km" claims next to a completely different spec-sheet number, and one price was in Swedish kronor, not Norwegian. I ended up writing an explicit rule for every messy field (use the pre-campaign price, use the larger of two conflicting dealer prices, convert currency at the day's actual rate) rather than quietly picking whichever number looked right. Four models still don't publish a weight at all. I left those gaps as gaps instead of guessing, because a chart that hides what it doesn't know is worse than one that shows it honestly.</p>
+
+<h2>Letting Chartchooser pick the chart, not my gut</h2>
+<p>My instinct would have been: bar chart for price, bar chart for range, done. Running the cleaned data through the Chartchooser MCP instead forced a real fit-check against every chart type Highcharts supports, not just the obvious ones. That's how a correlation heatmap and a price-vs-range scatter ended up in the mix that I wouldn't have thought to build myself, and they're what actually produced the most interesting finding in the whole project:</p>
+<blockquote>Priced across all 15 models, price and range look negatively correlated (r = -0.21). Split by propulsion type, that flips to r = +0.61 within electric models alone.</blockquote>
+<p>In other words, "more expensive mopeds have less range" is an illusion caused by comparing electric to gasoline in one pool. Inside electric alone, paying more genuinely does buy you more range. I only found that because I let the chart-fit process run properly instead of defaulting to whatever chart type I'd have grabbed by habit.</p>
+
+<h2>Orbit turns a chart into an answer</h2>
+<p>Charts tell you what the data looks like. They don't make the decision for you. That's the gap Orbit's toolbar closes, and I only wired up five of its tools rather than all twenty, because forcing every tool onto data that doesn't need it just adds noise:</p>
+<ul>
+  <li><strong>Filter & Focus</strong> to isolate electric-only or a price ceiling on the spot</li>
+  <li><strong>Summary Stats</strong> to see the real spread, not just one headline bar</li>
+  <li><strong>Correlations</strong> to check price against range and weight properly, not by eye</li>
+  <li><strong>KPI tiles</strong> to surface the cheapest, longest-range and most-trustworthy rows without hunting for them</li>
+  <li><strong>Derived Series</strong> to compute price-per-km of range, a number none of the source listings gave me</li>
+</ul>
+<p>The moment that sold me on this was clicking Orbit's Insights tool on the price treemap and getting this back, unprompted:</p>
+<blockquote>"Vespa Elettrica dominates this market segment at 72,900 NOK, nearly 2.5x the price of most competitors in either category. It's a clear outlier, not just among..."</blockquote>
+<p>That's not a sentence I wrote. It's Orbit reading the chart and telling me what it actually meant.</p>
+
+<h2>The full comparison</h2>
+<p>Here's every model, sorted by the number that actually decided this for me: price per km of range. Full sourcing, caveats and raw figures are in <a href="moped-dataset.json">moped-dataset.json</a>.</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Model</th><th>Propulsion</th><th>Price (NOK)</th><th>Range (km)</th><th>NOK / km</th><th>Confidence</th></tr>
+</thead>
+<tbody>
+<tr class="winner"><td>Kymco Agility 50</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>11,990</td><td>238</td><td>50</td><td>High</td></tr>
+<tr><td>Peugeot Kisbee 50 4T</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>28,900</td><td>371</td><td>78</td><td>High</td></tr>
+<tr><td>Piaggio Liberty 50</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>18,990</td><td>240</td><td>79</td><td>High</td></tr>
+<tr><td>SYM Orbit III (50)</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>26,990</td><td>250</td><td>108</td><td>High</td></tr>
+<tr><td>Piaggio Zip 50 S</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>32,900</td><td>275</td><td>120</td><td>High</td></tr>
+<tr><td>Yamaha 50 Aerox</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>27,900</td><td>219</td><td>127</td><td>Medium</td></tr>
+<tr><td>SYM Fiddle 3 (50)</td><td><span class="prop-dot prop-thermic"></span>Thermic</td><td>29,990</td><td>232</td><td>129</td><td>High</td></tr>
+<tr><td>Segway eMoped B110S</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>31,249</td><td>105</td><td>298</td><td>High</td></tr>
+<tr><td>Vmoto CUX Pro</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>29,900</td><td>80</td><td>374</td><td>High</td></tr>
+<tr><td>Yamaha NEO's Dual Battery</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>26,900</td><td>68</td><td>396</td><td>Medium</td></tr>
+<tr><td>NIU NQi Sport</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>26,900</td><td>50</td><td>538</td><td>Medium</td></tr>
+<tr><td>NIU MQi+ Sport</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>24,900</td><td>45</td><td>553</td><td>Medium</td></tr>
+<tr><td>Vmoto CITI (L1e)</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>37,990</td><td>63</td><td>603</td><td>High</td></tr>
+<tr><td>Vassla Scooter 2</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>24,483</td><td>40</td><td>612</td><td>Medium</td></tr>
+<tr><td>Vespa Elettrica</td><td><span class="prop-dot prop-electric"></span>Electric</td><td>72,900</td><td>100</td><td>729</td><td>High</td></tr>
+</tbody>
+</table>
+</div>
+<p class="table-caption">Thermic range is calculated from tank size and fuel consumption, not a tested spec, so it isn't directly comparable to electric's tested/claimed range in kind, only in what it costs you per km. &ndash; = not published by the source.</p>
+
+<h2>So what did I buy?</h2>
+<p>Running Derived Series' price-per-km across the set, one model isn't just cheaper, it's in a different league of value: the <strong>Kymco Agility 50</strong> at 11,990 NOK, with a 238 km range and High confidence data behind every figure. That works out to roughly 50 NOK per km of range, against 78 to over 700 for everything else in the set. It's also flagged Easy to repair on simple, widely available mechanicals, which matters when you're not buying the premium brand.</p>
+<p>If running cost and quiet operation matter more to you than sticker price, the electric value pick is the <strong>Vmoto CUX Pro</strong> at 29,900 NOK, the cheapest electric per km of range by a real margin. And if you just want a fun footnote: one of the fifteen models in this dataset is a gasoline scooter literally called the <strong>SYM Orbit III</strong>. No relation to Highcharts Orbit, but I couldn't resist the coincidence.</p>
+
+<div class="callout">Your priorities aren't mine. That's the point of building a filterable dashboard instead of a single verdict. <a href="index.html">Open the live dashboard</a> and filter to what actually matters to you.</div>
+
+<h2>Why this generalizes past mopeds</h2>
+<p>Nothing about this process was moped-specific. Any purchase decision with more than two or three comparison points and no single obvious winner works the same way: get the real numbers, be honest about what's missing, let a proper chart-fit process pick the visualization instead of defaulting to a bar chart for everything, then use decision-support tools to turn "here's a chart" into "here's an answer." Highcharts did the rendering, the Chartchooser MCP made sure I was looking at the right shape of chart for each question, and Orbit is what turned fifteen rows of researched spec sheets into an actual decision I could act on.</p>
+
+<hr>
+<p><a href="index.html">&larr; Back to the full dashboard</a></p>
+
+</body>
+</html>
